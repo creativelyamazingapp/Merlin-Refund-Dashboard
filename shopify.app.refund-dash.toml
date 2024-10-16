@@ -1,0 +1,28 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+client_id = "352eb0476d15b4743572b995ab78c3e9"
+name = "refund-dash"
+handle = "refund-dash"
+application_url = "https://element-decision-oh-reduction.trycloudflare.com"
+embedded = true
+
+[build]
+automatically_update_urls_on_dev = true
+dev_store_url = "quickstart-196d1f56.myshopify.com"
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "customer_read_customers,customer_read_orders,read_customers,read_orders,write_products"
+
+[auth]
+redirect_urls = [
+  "https://element-decision-oh-reduction.trycloudflare.com/auth/callback",
+  "https://element-decision-oh-reduction.trycloudflare.com/auth/shopify/callback",
+  "https://element-decision-oh-reduction.trycloudflare.com/api/auth/callback"
+]
+
+[webhooks]
+api_version = "2024-07"
+
+[pos]
+embedded = false

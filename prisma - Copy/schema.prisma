@@ -1,0 +1,114 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Session {
+  id               String    @id
+  shop             String
+  state            String
+  isOnline         Boolean
+  scope            String?
+  expires          DateTime?
+  onlineAccessInfo String?
+  accessToken      String?
+  userId           String?
+  firstName        String?
+  lastName         String?
+  email            String?
+  accountOwner     Boolean?
+  locale           String?
+  collaborator     Boolean?
+  emailVerified    Boolean?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+}
+
+model Order {
+  id   String @id @default(uuid()) // Unique order identifier
+  shop String @default("shopify1010") // Shopify store identifier (e.g., shop domain)
+
+  name         String // Order name or number
+  email        String? // Customer email (nullable)
+  createdAt    DateTime // Order creation timestamp
+  updatedAt    DateTime // Order update timestamp
+  totalPrice   Float // Total price of the order
+  currencyCode String // Currency code for the order
+
+  // Customer Details
+  customerId        String? // Customer ID (nullable)
+  customerFirstName String? // Customer's first name (nullable)
+  customerLastName  String? // Customer's last name (nullable)
+  phone             String? @default("101001") // Phone number (nullable)
+
+  // Shipping Address Details
+  shippingFirstName String? // Shipping first name (nullable)
+  shippingLastName  String? // Shipping last name (nullable)
+  address1          String? // Primary address line (nullable)
+  address2          String? // Secondary address line (nullable)
+  city              String? // City (nullable)
+  province          String? // Province/State (nullable)
+  country           String? // Country (nullable)
+  zip               String? // Zip/Postal code (nullable)
+  lineItems         OrderLineItem[] // Relation field
+
+  refunds Refund[] // Array of refunds associated with this order
+}
+
+model OrderLineItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  name      String
+  title     String
+  productId String  @default("product-001") // Default value for productId
+  imageUrl  String?
+  quantity  Int     @default(1) // Default value for quantity
+  price     Float   @default(0.0) // Default value for price
+  order     Order   @relation(fields: [orderId], references: [id])
+  product   Product @relation(fields: [productId], references: [id]) // Relationship to Product
+
+  @@index([orderId])
+}
+
+model Refund {
+  id              String           @id @default(uuid()) // Unique refund identifier
+  amount          Float // Refund amount
+  currencyCode    String // Currency code for the refund
+  createdAt       DateTime // Refund creation timestamp
+  orderId         String // Associated order ID
+  note            String? // Refund note (nullable)
+  order           Order            @relation(fields: [orderId], references: [id])
+  refundLineItems RefundLineItem[]
+}
+
+// model RefundLineItem {
+//   id         String @id @default(uuid())
+//   refundId   String
+//   refund     Refund @relation(fields: [refundId], references: [id])
+//   lineItemId String
+//   title      String
+//   quantity   Int
+// }
+
+model RefundLineItem {
+  id         String @id @default(uuid())
+  refundId   String
+  refund     Refund @relation(fields: [refundId], references: [id])
+  lineItemId String
+  title      String
+  quantity   Int
+  orderName  String @default("001") // New field to store the Order name or number
+}
+
+model Product {
+  id     String   @id @default(cuid()) // Unique product identifier
+  title  String // Product title
+  images String[] // Store image URLs as an array of strings
+  price  Float    @default(0.0) // Default value for price
+
+  lineItems OrderLineItem[] // Relationship to OrderLineItem
+}

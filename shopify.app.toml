@@ -1,0 +1,59 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+client_id = "ee1fe50ec0ca645082ec5c513bd8bb7d"
+name = "Merlin Refund Dashboard"
+handle = "merlin-refund-dashboard"
+application_url = "https://wesley-ruth-paraguay-worthy.trycloudflare.com"
+embedded = true
+
+[build]
+automatically_update_urls_on_dev = true
+dev_store_url = "quickstart-2c310ca9.myshopify.com"
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "customer_read_customers,customer_read_orders,read_all_orders,read_customers,read_orders,write_products"
+
+[auth]
+redirect_urls = [
+  "https://wesley-ruth-paraguay-worthy.trycloudflare.com/auth/callback",
+  "https://wesley-ruth-paraguay-worthy.trycloudflare.com/auth/shopify/callback",
+  "https://wesley-ruth-paraguay-worthy.trycloudflare.com/api/auth/callback"
+]
+
+[webhooks]
+api_version = "2024-07"
+
+  [[webhooks.subscriptions]]
+  uri = "arn:aws:events:ap-southeast-1::event-source/aws.partner/shopify.com/144587390977/CUSTOMERS_DATA_REQUEST"
+  compliance_topics = [ "customers/data_request" ]
+
+  [[webhooks.subscriptions]]
+  uri = "arn:aws:events:ap-southeast-1::event-source/aws.partner/shopify.com/144587390977/CUSTOMERS_REDACT"
+  compliance_topics = [ "customers/redact" ]
+
+  [[webhooks.subscriptions]]
+  uri = "arn:aws:events:ap-southeast-1::event-source/aws.partner/shopify.com/144587390977/SHOP_REDACT"
+  compliance_topics = [ "shop/redact" ]
+
+  [[webhooks.subscriptions]]
+  topics = [
+  "app/uninstalled",
+  "orders/delete",
+  "orders/edited",
+  "orders/fulfilled",
+  "orders/updated"
+]
+  uri = "arn:aws:events:eu-west-2::event-source/aws.partner/shopify.com/144587390977/ORDER_UPDATED"
+
+  [[webhooks.subscriptions]]
+  topics = [
+  "app/uninstalled",
+  "orders/cancelled",
+  "orders/create",
+  "refunds/create"
+]
+  uri = "https://refund-dashboard.fly.dev/webhooks"
+
+[pos]
+embedded = false
